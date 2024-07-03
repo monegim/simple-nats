@@ -7,18 +7,16 @@ import (
 	"net"
 )
 
-type Server struct {
-	host, port string
+type Options struct {
+	Host string 
+	Port int
 }
 
-func NewServer(host, port string) *Server {
-	return &Server{
-		host: host,
-		port: port,
-	}
+func NewServer(opts *Options) *Options {
+	return opts
 }
-func (s *Server) Run() {
-	address := fmt.Sprintf("%s:%s", s.host, s.port)
+func (s *Options) Run() {
+	address := fmt.Sprintf("%s:%d", s.Host, s.Port)
 	listener, err := net.Listen("tcp", address)
 	defer listener.Close()
 	if err != nil {
