@@ -32,6 +32,9 @@ func main() {
 	// 	port = "4222"
 	// }
 
-	server := server.NewServer(opts)
-	server.Run()
+	s := server.NewServer(opts)
+
+	// TODO: ConfigureLogger
+	// s.ConfigureLogger()
+	s.Run()
 }

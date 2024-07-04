@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 )
 
 type Options struct {
@@ -34,7 +35,10 @@ func (s *Options) Run() {
 		go client.server()
 	}
 }
-
+func PrintAndDie(msg string){
+	fmt.Fprintln(os.Stderr, msg)
+	os.Exit(1)
+}
 func (c *Client) server() {
 	c.reader = bufio.NewReader(*c.conn)
 	for {
