@@ -14,17 +14,14 @@ type Options struct {
 }
 
 type Server struct {
-}
-
-func (server *Server) Start() {
-
+	opts *Options
 }
 
 func NewServer(opts *Options) (*Server, error) {
-	return &Server{}, nil
+	return &Server{opts: opts}, nil
 }
-func (s *Options) Run() {
-	address := fmt.Sprintf("%s:%d", s.Host, s.Port)
+func (s *Server) Start() {
+	address := fmt.Sprintf("%s:%d", s.opts.Host, s.opts.Port)
 	listener, err := net.Listen("tcp", address)
 	defer listener.Close()
 	if err != nil {
