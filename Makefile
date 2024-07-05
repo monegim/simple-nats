@@ -8,7 +8,7 @@ build:
 build-nc: ## Build the container without caching
 	docker build --no-cache -t $(APP_NAME) .
 
-up:
+up: build
 	docker compose up -d
 
 down:

@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     image: simple-nats:latest
     container_name: simple-nats
+    restart: always
     ports:
       - 4222:4222
     networks:
@@ -18,3 +19,4 @@ services:
 networks:
   nats:
     name: nats
+    driver: bridge

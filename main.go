@@ -12,7 +12,7 @@ func main() {
 	var err error
 	host := os.Getenv("HOST")
 	if host == "" {
-		host = "localhost"
+		host = "0.0.0.0"
 	}
 	port_env := os.Getenv("PORT")
 	if port_env == "" {
