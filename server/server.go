@@ -9,12 +9,19 @@ import (
 )
 
 type Options struct {
-	Host string 
+	Host string
 	Port int
 }
 
-func NewServer(opts *Options) *Options {
-	return opts
+type Server struct {
+}
+
+func (server *Server) Start() {
+
+}
+
+func NewServer(opts *Options) (*Server, error) {
+	return &Server{}, nil
 }
 func (s *Options) Run() {
 	address := fmt.Sprintf("%s:%d", s.Host, s.Port)
@@ -35,10 +42,16 @@ func (s *Options) Run() {
 		go client.server()
 	}
 }
-func PrintAndDie(msg string){
+func PrintAndDie(msg string) {
 	fmt.Fprintln(os.Stderr, msg)
 	os.Exit(1)
 }
+
+func Run(s *Server) error {
+	s.Start()
+	return nil
+}
+
 func (c *Client) server() {
 	c.reader = bufio.NewReader(*c.conn)
 	for {

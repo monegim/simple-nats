@@ -32,9 +32,14 @@ func main() {
 	// 	port = "4222"
 	// }
 
-	s := server.NewServer(opts)
+	s, err := server.NewServer(opts)
+	if err != nil {
+		server.PrintAndDie(err.Error())
+	}
 
 	// TODO: ConfigureLogger
 	// s.ConfigureLogger()
-	s.Run()
+	if err := server.Run(s); err != nil {
+
+	}
 }
