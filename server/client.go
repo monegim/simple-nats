@@ -11,8 +11,13 @@ const (
 	ROUTER
 )
 
-type Client struct {
+type client struct {
 	reader *bufio.Reader
 	conn   *net.Conn
 	mu     sync.Mutex
+	parseState
+}
+
+func (c *client) sendErr(err string) {
+
 }

@@ -33,7 +33,7 @@ func (s *Server) Start() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		client := Client{
+		client := client{
 			conn: &conn,
 		}
 		go client.server()
@@ -49,7 +49,7 @@ func Run(s *Server) error {
 	return nil
 }
 
-func (c *Client) server() {
+func (c *client) server() {
 	c.reader = bufio.NewReader(*c.conn)
 	for {
 
