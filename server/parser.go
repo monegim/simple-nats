@@ -4,8 +4,11 @@ import "fmt"
 
 type parserState int
 type parseState struct {
-	state parserState
-	op    byte
+	state   parserState
+	op      byte
+	as      int
+	drop    int
+	argBuff []byte
 }
 
 const (
@@ -17,6 +20,7 @@ const (
 	OP_CONNE
 	OP_CONNEC
 	OP_CONNECT
+	CONNECT_ARG
 	OP_P
 	OP_PU
 	OP_PUB
@@ -50,6 +54,77 @@ func (c *client) parse(buf []byte) error {
 				c.state = OP_S
 			default:
 				goto parseErr
+			}
+		case OP_C:
+			switch b {
+			case 'o', 'O':
+				c.state = OP_CO
+			default:
+				goto parseErr
+			}
+		case OP_CO:
+			switch b {
+			case 'N', 'n':
+				c.state = OP_CON
+			default:
+				goto parseErr
+			}
+		case OP_CON:
+			switch b {
+			case 'N', 'n':
+				c.state = OP_CONN
+			default:
+				goto parseErr
+			}
+		case OP_CONN:
+			switch b {
+			case 'E', 'e':
+				c.state = OP_CONNE
+			default:
+				goto parseErr
+			}
+		case OP_CONNE:
+			switch b {
+			case 'C', 'c':
+				c.state = OP_CONNEC
+			default:
+				goto parseErr
+			}
+		case OP_CONNEC:
+			switch b {
+			case 'T', 't':
+				c.state = OP_CONNECT
+			default:
+				goto parseErr
+			}
+		case OP_CONNECT:
+			switch b {
+			case ' ', '\t':
+				continue
+			default:
+				c.state = CONNECT_ARG
+				c.as = i
+			}
+		case CONNECT_ARG:
+			switch b {
+			case '\r':
+				c.drop = 1
+			case '\n':
+				var arg []byte
+				if c.argBuff != nil {
+					arg = c.argBuff
+					c.argBuff = nil
+				} else {
+					arg = buf[c.as : i-c.drop]
+				}
+				if err := processConnect(arg); err != nil {
+					return err
+				}
+				c.drop, c.state = 0, OP_START
+			default:
+				if c.argBuff != nil {
+					c.argBuff = append(c.argBuff, b)
+				}
 			}
 		default:
 			goto parseErr

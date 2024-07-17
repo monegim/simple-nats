@@ -21,3 +21,7 @@ type client struct {
 func (c *client) sendErr(err string) {
 
 }
+
+func (c *client) processConnect(arg []byte) error {
+	return nil
+}
