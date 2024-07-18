@@ -117,7 +117,7 @@ func (c *client) parse(buf []byte) error {
 				} else {
 					arg = buf[c.as : i-c.drop]
 				}
-				if err := processConnect(arg); err != nil {
+				if err := c.processConnect(arg); err != nil {
 					return err
 				}
 				c.drop, c.state = 0, OP_START
@@ -125,6 +125,26 @@ func (c *client) parse(buf []byte) error {
 				if c.argBuff != nil {
 					c.argBuff = append(c.argBuff, b)
 				}
+			}
+		case OP_PI:
+			switch b {
+			case 'N', 'n':
+				c.state = OP_PIN
+			default:
+				goto parseErr
+			}
+		case OP_PIN:
+			switch b {
+			case 'G', 'g':
+				c.state = OP_PING
+			default:
+				goto parseErr
+			}
+		case OP_PING:
+			switch b {
+			case '\n':
+				c.processPing()
+				c.drop, c.state = 0, OP_START
 			}
 		default:
 			goto parseErr
